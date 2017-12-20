@@ -28,7 +28,7 @@ public class Main {
         Runtime runtime = new Runtime(resourceLoader, classLoader, backends, runtimeOptions);
 
 
-        //TODO dirty
+        //TODO did it dirty
         GroupSelector rules = new GroupSelector(country);
         objectFactory.cacheNewInstance(rules);
         runtimeOptions.getFeaturePaths().clear();
