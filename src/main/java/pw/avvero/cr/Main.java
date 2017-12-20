@@ -14,7 +14,7 @@ import java.util.Collections;
 public class Main {
 
     public static void main(String[] strings) throws IOException {
-        calculateGroup(new Client("CHL", null));
+        String result = calculateGroup(new Client("CHL", null));
     }
 
     public static String calculateGroup(Client client) throws IOException {

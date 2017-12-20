@@ -15,4 +15,21 @@ class MainTests extends Specification{
         "RUS"   | null     | "Default"
     }
 
+    def "butch"() {
+        when:
+        def resultMap = [:]
+        Variants.COUNTRIES.each {
+            def country = it
+            Variants.LANGUAGES.each {
+                def language = it
+                def group = Main.calculateGroup(new Client(country: country, language: language))
+                def n = resultMap[group] ? resultMap[group] : 0
+                resultMap[group] = ++n
+            }
+        }
+        println resultMap
+        then:
+        1 == 1
+    }
+
 }
