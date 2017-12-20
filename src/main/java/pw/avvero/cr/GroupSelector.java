@@ -1,21 +1,23 @@
+package pw.avvero.cr;
+
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 
 public class GroupSelector {
 
-    public String country;
+    public Client client;
     public String group;
 
     public GroupSelector() {
     }
 
-    public GroupSelector(String country) {
-        this.country = country;
+    public GroupSelector(Client client) {
+        this.client = client;
     }
 
     @When("^client country is \"([^\"]*)\"$")
     public void clientCountryIs(String code) throws Throwable {
-        assert code.equals(country);
+        assert code.equals(client.getCountry());
     }
 
     @Then("^group will be \"([^\"]*)\"$")

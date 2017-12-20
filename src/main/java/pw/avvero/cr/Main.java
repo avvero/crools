@@ -1,3 +1,5 @@
+package pw.avvero.cr;
+
 import cucumber.runtime.*;
 import cucumber.runtime.Runtime;
 import cucumber.runtime.io.MultiLoader;
@@ -12,10 +14,10 @@ import java.util.Collections;
 public class Main {
 
     public static void main(String[] strings) throws IOException {
-        calculateGroup("CHL");
+        calculateGroup(new Client("CHL", null));
     }
 
-    public static String calculateGroup(String country) throws IOException {
+    public static String calculateGroup(Client client) throws IOException {
         Class clazz = Main.class;
         ClassLoader classLoader = clazz.getClassLoader();
         RuntimeOptionsFactory runtimeOptionsFactory = new RuntimeOptionsFactory(clazz);
@@ -29,7 +31,7 @@ public class Main {
 
 
         //TODO did it dirty
-        GroupSelector rules = new GroupSelector(country);
+        GroupSelector rules = new GroupSelector(client);
         objectFactory.cacheNewInstance(rules);
         runtimeOptions.getFeaturePaths().clear();
         runtimeOptions.getFeaturePaths().add("src/main/resources/group_distribution.feature");
