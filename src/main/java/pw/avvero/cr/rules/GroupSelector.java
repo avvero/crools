@@ -1,20 +1,29 @@
 package pw.avvero.cr.rules;
 
+import cucumber.api.java.en.And;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import pw.avvero.cr.Rules;
 import pw.avvero.cr.domain.Client;
+import pw.avvero.cr.domain.Deposit;
 
-public class GroupSelector implements Rules<String> {
+import java.math.BigDecimal;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+public class GroupSelector implements Rules<Set<String>> {
 
     public Client client;
-    public String group;
+    public Deposit deposit;
+    public Set<String> group = new HashSet<>();
 
     public GroupSelector() {
     }
 
-    public GroupSelector(Client client) {
+    public GroupSelector(Client client, Deposit deposit) {
         this.client = client;
+        this.deposit = deposit;
     }
 
     @When("^client country is \"([^\"]*)\"$")
@@ -29,11 +38,18 @@ public class GroupSelector implements Rules<String> {
 
     @Then("^group will be \"([^\"]*)\"$")
     public void groupWillBe(String code) throws Throwable {
-        group = code;
+        group.add(code);
     }
 
     @Override
-    public String getResult() {
+    public Set<String> getResult() {
         return group;
+    }
+
+    @And("^deposit more than (\\d+)$")
+    public void depositMoreThan(BigDecimal amount) throws Throwable {
+        assert deposit !=null
+                && deposit.getAmount() !=null
+                && deposit.getAmount().compareTo(amount) > 0;
     }
 }

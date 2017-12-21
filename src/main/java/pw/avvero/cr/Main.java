@@ -7,6 +7,7 @@ import cucumber.runtime.io.ResourceLoader;
 import cucumber.runtime.io.ResourceLoaderClassFinder;
 import cucumber.runtime.java.JavaBackend;
 import pw.avvero.cr.domain.Client;
+import pw.avvero.cr.domain.Deposit;
 import pw.avvero.cr.rules.GroupSelector;
 import pw.avvero.cr.test.DataSet;
 import pw.avvero.cr.test.DataSetExtractor;
@@ -14,15 +15,16 @@ import pw.avvero.cr.test.DataSetExtractor;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Set;
 
 public class Main {
 
     public static void main(String[] strings) throws IOException {
-        String result = calculateGroup(new Client("CHL", null));
+        Set<String> result = calculateGroup(new Client("CHL", null), null);
     }
 
-    public static String calculateGroup(Client client) throws IOException {
-        GroupSelector rules = new GroupSelector(client);
+    public static Set<String> calculateGroup(Client client, Deposit deposit) throws IOException {
+        GroupSelector rules = new GroupSelector(client, deposit);
         return execute(rules, "src/main/resources/group_distribution.feature");
     }
 
