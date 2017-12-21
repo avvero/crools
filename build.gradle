@@ -1,8 +1,23 @@
-group 'com.avvero'
-version '1.0-SNAPSHOT'
+buildscript {
+    ext {
+        springBootVersion = '1.4.1.RELEASE'
+    }
+    repositories {
+        mavenCentral()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        classpath "gradle.plugin.com.boxfuse.client:flyway-release:4.0.3"
+    }
+}
 
 apply plugin: 'java'
 apply plugin: 'groovy'
+apply plugin: 'spring-boot'
+apply plugin: 'application'
 
 sourceCompatibility = 1.8
 
@@ -11,6 +26,8 @@ repositories {
 }
 
 dependencies {
+    compile "org.springframework.boot:spring-boot-starter-web"
+
     compile 'info.cukes:cucumber-java8:1.2.5'
     compile 'org.projectlombok:lombok:1.16.6'
     // https://mvnrepository.com/artifact/org.spockframework/spock-core

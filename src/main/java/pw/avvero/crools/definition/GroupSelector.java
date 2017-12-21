@@ -1,15 +1,13 @@
-package pw.avvero.cr.rules;
+package pw.avvero.crools.definition;
 
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
-import pw.avvero.cr.Rules;
-import pw.avvero.cr.domain.Client;
-import pw.avvero.cr.domain.Deposit;
+import pw.avvero.crools.domain.Client;
+import pw.avvero.crools.domain.Deposit;
 
 import java.math.BigDecimal;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public class GroupSelector implements Rules<Set<String>> {

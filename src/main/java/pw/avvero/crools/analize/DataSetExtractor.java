@@ -1,10 +1,10 @@
-package pw.avvero.cr.test;
+package pw.avvero.crools.analize;
 
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import lombok.Data;
-import pw.avvero.cr.Rules;
+import pw.avvero.crools.definition.Rules;
 
 import java.math.BigDecimal;
 

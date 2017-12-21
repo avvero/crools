@@ -1,4 +1,4 @@
-package pw.avvero.cr;
+package pw.avvero.crools.definition;
 
 public interface Rules<T> {
 

@@ -1,4 +1,4 @@
-package pw.avvero.cr.domain;
+package pw.avvero.crools.domain;
 
 import lombok.Data;
 

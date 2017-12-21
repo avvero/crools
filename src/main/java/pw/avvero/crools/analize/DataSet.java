@@ -1,4 +1,4 @@
-package pw.avvero.cr.test;
+package pw.avvero.crools.analize;
 
 import lombok.Data;
 
