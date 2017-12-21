@@ -6,6 +6,10 @@ import cucumber.runtime.io.MultiLoader;
 import cucumber.runtime.io.ResourceLoader;
 import cucumber.runtime.io.ResourceLoaderClassFinder;
 import cucumber.runtime.java.JavaBackend;
+import pw.avvero.cr.domain.Client;
+import pw.avvero.cr.rules.GroupSelector;
+import pw.avvero.cr.test.DataSet;
+import pw.avvero.cr.test.DataSetExtractor;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -18,9 +22,18 @@ public class Main {
     }
 
     public static String calculateGroup(Client client) throws IOException {
-        Class clazz = Main.class;
-        ClassLoader classLoader = clazz.getClassLoader();
-        RuntimeOptionsFactory runtimeOptionsFactory = new RuntimeOptionsFactory(clazz);
+        GroupSelector rules = new GroupSelector(client);
+        return execute(rules, "src/main/resources/group_distribution.feature");
+    }
+
+    public static DataSet getDataSet() throws IOException {
+        DataSetExtractor rules = new DataSetExtractor();
+        return execute(rules, "src/main/resources/group_distribution.feature");
+    }
+
+    public static <T> T execute (Rules<T> rules, String feature) throws IOException {
+        ClassLoader classLoader = rules.getClass().getClassLoader();
+        RuntimeOptionsFactory runtimeOptionsFactory = new RuntimeOptionsFactory(rules.getClass());
         RuntimeOptions runtimeOptions = runtimeOptionsFactory.create();
         ResourceLoader resourceLoader = new MultiLoader(classLoader);
         NewJavaObjectFactory objectFactory = new NewJavaObjectFactory();
@@ -31,13 +44,11 @@ public class Main {
 
 
         //TODO did it dirty
-        GroupSelector rules = new GroupSelector(client);
         objectFactory.cacheNewInstance(rules);
         runtimeOptions.getFeaturePaths().clear();
-        runtimeOptions.getFeaturePaths().add("src/main/resources/group_distribution.feature");
+        runtimeOptions.getFeaturePaths().add(feature);
         //
         runtime.run();
-        return rules.group;
+        return rules.getResult();
     }
-
 }

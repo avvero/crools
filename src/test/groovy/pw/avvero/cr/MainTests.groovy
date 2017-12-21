@@ -1,5 +1,6 @@
 package pw.avvero.cr
 
+import pw.avvero.cr.domain.Client
 import spock.lang.Specification
 import spock.lang.Unroll
 
@@ -11,25 +12,15 @@ class MainTests extends Specification{
         Main.calculateGroup(new Client(country: country, language: language)) == group
         where:
         country | language | group
-        "CHL"   | null     | "Experiment"
-        "RUS"   | null     | "Default"
+        "CHL"   | null     | "Chile"
+        "RUS"   | null     | "Russia"
+        "RUS"   | "rus"    | "Russia"
+        "RUS"   | "eng"    | "EnRussia"
     }
 
-    def "butch"() {
-        when:
-        def resultMap = [:]
-        Variants.COUNTRIES.each {
-            def country = it
-            Variants.LANGUAGES.each {
-                def language = it
-                def group = Main.calculateGroup(new Client(country: country, language: language))
-                def n = resultMap[group] ? resultMap[group] : 0
-                resultMap[group] = ++n
-            }
-        }
-        println resultMap
-        then:
-        1 == 1
+    def "Extract dataset"() {
+        expect:
+        Main.getDataSet() == []
     }
 
 }

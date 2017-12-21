@@ -1,4 +1,4 @@
-package pw.avvero.cr;
+package pw.avvero.cr.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
