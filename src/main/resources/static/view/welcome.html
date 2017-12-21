@@ -4,6 +4,16 @@
     </div>
     <div class="col-md-6">
         <h2>Analysis</h2>
-        <p>{{data | json}}</p>
+        <h3>dataSet</h3>
+        <p>{{data.dataSet}}</p>
+        <h3>statistics</h3>
+        <p>{{data.variants}}</p>
+        <h3>groups distributions</h3>
+        <div ng-repeat="groupStat in data.groupStats">
+            <div>{{groupStat.name}} - {{groupStat.count}}</div>
+            <div ng-repeat="fact in groupStat.facts">{{fact}}</div>
+        </div>
+        <h3>distributions</h3>
+        <p>{{data.distributions}}</p>
     </div>
 </div>

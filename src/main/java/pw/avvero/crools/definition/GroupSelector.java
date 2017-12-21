@@ -3,6 +3,7 @@ package pw.avvero.crools.definition;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
+import org.springframework.util.Assert;
 import pw.avvero.crools.domain.Client;
 import pw.avvero.crools.domain.Deposit;
 
@@ -26,12 +27,12 @@ public class GroupSelector implements Rules<Set<String>> {
 
     @When("^client country is \"([^\"]*)\"$")
     public void clientCountryIs(String code) throws Throwable {
-        assert code.equals(client.getCountry());
+        Assert.isTrue(code.equals(client.getCountry()));
     }
 
     @When("^client language is \"([^\"]*)\"$")
     public void clientLanguageIs(String code) throws Throwable {
-        assert code.equals(client.getLanguage());
+        Assert.isTrue(code.equals(client.getLanguage()));
     }
 
     @Then("^group will be \"([^\"]*)\"$")
@@ -46,8 +47,8 @@ public class GroupSelector implements Rules<Set<String>> {
 
     @And("^deposit more than (\\d+)$")
     public void depositMoreThan(BigDecimal amount) throws Throwable {
-        assert deposit !=null
-                && deposit.getAmount() !=null
+        assert deposit != null
+                && deposit.getAmount() != null
                 && deposit.getAmount().compareTo(amount) > 0;
     }
 }
