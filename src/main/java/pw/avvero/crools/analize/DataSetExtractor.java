@@ -4,6 +4,7 @@ import cucumber.api.java.en.And;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import lombok.Data;
+import org.springframework.util.Assert;
 import pw.avvero.crools.definition.Rules;
 
 import java.math.BigDecimal;
@@ -16,6 +17,12 @@ public class DataSetExtractor implements Rules<DataSet> {
     @When("^client country is \"([^\"]*)\"$")
     public void clientCountryIs(String code) throws Throwable {
         dataSet.getCountries().add(code);
+    }
+
+    @When("^client country is not \"([^\"]*)\"$")
+    public void clientCountryIsNot(String code) throws Throwable {
+        dataSet.getCountries().add("not_" + code);
+        dataSet.getCountries().add("foo");
     }
 
     @Then("^group will be \"([^\"]*)\"$")

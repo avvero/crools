@@ -4,6 +4,10 @@ Feature: Select group
     When client country is "CHL"
     Then group will be "Chile"
 
+  Scenario: Experiment group will be chosen for CHL2
+    When client country is not "CHL"
+    Then group will be "Default"
+
   Scenario: Default group will be chosen for RUS
     When client country is "RUS"
     Then group will be "Russia"

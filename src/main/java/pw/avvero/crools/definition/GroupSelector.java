@@ -1,5 +1,6 @@
 package pw.avvero.crools.definition;
 
+import cucumber.api.PendingException;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
@@ -28,6 +29,11 @@ public class GroupSelector implements Rules<Set<String>> {
     @When("^client country is \"([^\"]*)\"$")
     public void clientCountryIs(String code) throws Throwable {
         Assert.isTrue(code.equals(client.getCountry()));
+    }
+
+    @When("^client country is not \"([^\"]*)\"$")
+    public void clientCountryIsNot(String code) throws Throwable {
+        Assert.isTrue(!code.equals(client.getCountry()));
     }
 
     @When("^client language is \"([^\"]*)\"$")

@@ -21,6 +21,7 @@ import pw.avvero.crools.domain.Deposit;
 import pw.avvero.crools.impl.NewJavaObjectFactory;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -58,13 +59,17 @@ public class RuleService {
     }
 
     public DataSet getDataSet() throws IOException {
-        DataSetExtractor rules = new DataSetExtractor();
-        return execute(rules, "src/main/resources/group_distribution.feature");
+        return getDataSet("src/main/resources/group_distribution.feature");
     }
 
-    public Map analise(DataSetExtractor rules, String feature) throws IOException {
+    public DataSet getDataSet(String feature) throws IOException {
+        DataSetExtractor rules = new DataSetExtractor();
+        return execute(rules, feature);
+    }
+
+    public Map analise(String feature) throws IOException {
         Map result = new HashMap();
-        DataSet dataSet = getDataSet();
+        DataSet dataSet = getDataSet(feature);
         Map<String, GroupStat> groupStats = new HashMap<>();
         Map<String, Object> distributions = new HashMap<>();
         AtomicInteger variants = new AtomicInteger(0);
@@ -73,30 +78,7 @@ public class RuleService {
             dataSet.getLanguages().forEach(language -> {
                 dataSet.getDepositAmount().forEach(depositAmount -> {
                     variants.incrementAndGet();
-                    Client client = new Client(country, language);
-                    Deposit deposit = new Deposit(depositAmount);
-
-                    Set<String> calculateGroups = calculateGroup(client, deposit);
-                    if (calculateGroups == null || calculateGroups.isEmpty()) {
-                        GroupStat groupStat = groupStats.computeIfAbsent(null, k -> new GroupStat(null));
-                        groupStat.setCount(groupStat.getCount() + 1);
-                        groupStat.getFacts().add(new HashMap<String, Object>() {
-                            {
-                                put("client", client);
-                                put("deposit", deposit);
-                            }
-                        });
-                    }
-                    calculateGroups.forEach(calculatedGroup -> {
-                        GroupStat groupStat = groupStats.computeIfAbsent(calculatedGroup, k -> new GroupStat(calculatedGroup));
-                        groupStat.setCount(groupStat.getCount() + 1);
-                        groupStat.getFacts().add(new HashMap<String, Object>() {
-                            {
-                                put("client", client);
-                                put("deposit", deposit);
-                            }
-                        });
-                    });
+                    analiseEntry(feature, country, language, depositAmount, groupStats);
                 });
             });
         });
@@ -106,6 +88,38 @@ public class RuleService {
         result.put("groupStats", groupStats.values());
         result.put("distributions", distributions);
         return result;
+    }
+
+    private void analiseEntry(String feature,
+                         String country,
+                         String language,
+                         BigDecimal depositAmount,
+                         Map<String, GroupStat> groupStats) {
+        Client client = new Client(country, language);
+        Deposit deposit = new Deposit(depositAmount);
+
+        Set<String> calculateGroups = execute(new GroupSelector(client, deposit), feature);
+
+        if (calculateGroups == null || calculateGroups.isEmpty()) {
+            GroupStat groupStat = groupStats.computeIfAbsent(null, k -> new GroupStat(null));
+            groupStat.setCount(groupStat.getCount() + 1);
+            groupStat.getFacts().add(new HashMap<String, Object>() {
+                {
+                    put("client", client);
+                    put("deposit", deposit);
+                }
+            });
+        }
+        calculateGroups.forEach(calculatedGroup -> {
+            GroupStat groupStat = groupStats.computeIfAbsent(calculatedGroup, k -> new GroupStat(calculatedGroup));
+            groupStat.setCount(groupStat.getCount() + 1);
+            groupStat.getFacts().add(new HashMap<String, Object>() {
+                {
+                    put("client", client);
+                    put("deposit", deposit);
+                }
+            });
+        });
     }
 
     @Data

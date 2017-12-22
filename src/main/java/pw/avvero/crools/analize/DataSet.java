@@ -15,8 +15,8 @@ public class DataSet {
     private Set<String> groups = new HashSet<>();
 
     public DataSet() {
-//        countries.add(null);
-//        languages.add(null);
+        countries.add(null);
+        languages.add(null);
         depositAmount.add(null);
         groups.add(null);
     }
