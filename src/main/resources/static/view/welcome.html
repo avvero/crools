@@ -11,9 +11,36 @@
         <div ng-repeat="error in statistic.errors">
             <div ng-if="error.name == 'entriesInNullGroup'" class="bs-callout bs-callout-danger">
                 <h4>There are entries in &lt;null&gt; group</h4>
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>group</th>
+                        <th>count</th>
+                        <th>variants</th>
+                    </tr>
+                    </thead>
+                    <tr ng-repeat="groupStat in data.groupStats" ng-if="groupStat.name == null">
+                        <th scope="row">{{$index}}</th>
+                        <td>{{groupStat.name || "&lt;null&gt;"}}</td>
+                        <td>{{groupStat.count}}</td>
+                        <td>
+                            <div ng-repeat="fact in groupStat.facts">{{fact}}</div>
+                        </td>
+                    </tr>
+                </table>
             </div>
             <div ng-if="error.name == 'totalDistributionsGtVariants'" class="bs-callout bs-callout-danger">
                 <h4>Some entries goes to more than one group</h4>
+                <table class="table">
+                    <tr ng-repeat="distribution in data.distributions" ng-if="distribution.groups && distribution.groups.length > 1">
+                        <th scope="row">{{$index}}</th>
+                        <td>
+                            <div ng-repeat="fact in distribution.facts">{{fact}}</div>
+                        </td>
+                        <td>{{distribution.groups}}</td>
+                    </tr>
+                </table>
             </div>
         </div>
         <h3>warnings</h3>
@@ -24,12 +51,11 @@
         </div>
         <h3>factDictionary</h3>
         <p>{{data.factDictionary}}</p>
-        <h3>statistics</h3>
-        <p>variants: {{data.variants}}</p>
+        <h3>distributions</h3>
+        <p>size: {{data.distributions.length}}</p>
         <h3>groups distributions</h3>
         <div>
             <table class="table">
-                <!--<caption>groups distributions</caption>-->
                 <thead>
                 <tr>
                     <th>#</th>

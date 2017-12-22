@@ -9,6 +9,7 @@ import cucumber.runtime.io.MultiLoader;
 import cucumber.runtime.io.ResourceLoader;
 import cucumber.runtime.io.ResourceLoaderClassFinder;
 import cucumber.runtime.java.JavaBackend;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -71,43 +72,33 @@ public class RuleService {
         Map result = new HashMap();
         FactDictionary factDictionary = getFactDictionary(feature);
         Map<String, GroupStat> groupStats = new HashMap<>();
-        Map<String, Object> distributions = new HashMap<>();
-        AtomicInteger variants = new AtomicInteger(0);
-
+        Set<Distribution> distributions = new HashSet<>();
         factDictionary.getCountries().forEach(country -> {
             factDictionary.getLanguages().forEach(language -> {
                 factDictionary.getDepositAmount().forEach(depositAmount -> {
-                    variants.incrementAndGet();
-                    analiseEntry(feature, country, language, depositAmount, groupStats);
+                    Client client = new Client(country, language);
+                    Deposit deposit = new Deposit(depositAmount);
+                    Map<String, Object> facts = new HashMap<String, Object>() {{
+                        put("client", client);
+                        put("deposit", deposit);
+                    }};
+                    Set<String> calculatedGroups = execute(new GroupSelector(client, deposit), feature);
+                    analiseEntry(facts, calculatedGroups, groupStats);
+                    distributions.add(new Distribution(facts, calculatedGroups));
                 });
             });
         });
-
         result.put("factDictionary", factDictionary);
-        result.put("variants", variants);
         result.put("groupStats", groupStats.values());
         result.put("distributions", distributions);
         return result;
     }
 
-    private void analiseEntry(String feature,
-                         String country,
-                         String language,
-                         BigDecimal depositAmount,
-                         Map<String, GroupStat> groupStats) {
-        Client client = new Client(country, language);
-        Deposit deposit = new Deposit(depositAmount);
-        Map<String, Object> facts = new HashMap<String, Object>() {
-            {
-                put("client", client);
-                put("deposit", deposit);
-            }
-        };
-        Set<String> calculateGroups = execute(new GroupSelector(client, deposit), feature);
-        if (calculateGroups == null || calculateGroups.isEmpty()) {
+    private void analiseEntry(Map<String, Object> facts, Set<String> calculatedGroups, Map<String, GroupStat> groupStats) {
+        if (calculatedGroups == null || calculatedGroups.isEmpty()) {
             populateStatistics(null, groupStats, facts);
         } else {
-            calculateGroups.forEach(calculatedGroup -> populateStatistics(calculatedGroup, groupStats, facts));
+            calculatedGroups.forEach(calculatedGroup -> populateStatistics(calculatedGroup, groupStats, facts));
         }
     }
 
@@ -127,5 +118,13 @@ public class RuleService {
         public GroupStat(String name) {
             this.name = name;
         }
+    }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public class Distribution {
+        private Map<String, Object> facts;
+        private Set<String> groups;
     }
 }

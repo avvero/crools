@@ -4,6 +4,7 @@ import cucumber.api.java.en.And;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import lombok.Data;
+import org.springframework.util.Assert;
 import pw.avvero.crools.definition.Rules;
 
 import java.math.BigDecimal;
@@ -16,6 +17,7 @@ public class FactDictionaryExtractor implements Rules<FactDictionary> {
     @When("^client country is \"([^\"]*)\"$")
     public void clientCountryIs(String code) throws Throwable {
         factDictionary.getCountries().add(code);
+        factDictionary.getCountries().add("foo");
     }
 
     @When("^client country is not \"([^\"]*)\"$")
@@ -32,6 +34,13 @@ public class FactDictionaryExtractor implements Rules<FactDictionary> {
     @When("^client language is \"([^\"]*)\"$")
     public void clientLanguageIs(String code) throws Throwable {
         factDictionary.getLanguages().add(code);
+        factDictionary.getLanguages().add("foo");
+    }
+
+    @When("^client language is not\"([^\"]*)\"$")
+    public void clientLanguageIsNot(String code) throws Throwable {
+        factDictionary.getLanguages().add(code);
+        factDictionary.getLanguages().add("foo");
     }
 
     @And("^deposit more than (\\d+)$")

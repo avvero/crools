@@ -41,20 +41,25 @@ public class GroupSelector implements Rules<Set<String>> {
         Assert.isTrue(code.equals(client.getLanguage()));
     }
 
+    @When("^client language is not\"([^\"]*)\"$")
+    public void clientLanguageIsNot(String code) throws Throwable {
+        Assert.isTrue(!code.equals(client.getLanguage()));
+    }
+
     @Then("^group will be \"([^\"]*)\"$")
     public void groupWillBe(String code) throws Throwable {
         group.add(code);
     }
 
+    @And("^deposit more than (\\d+)$")
+    public void depositMoreThan(BigDecimal amount) throws Throwable {
+        Assert.isTrue(deposit != null
+                && deposit.getAmount() != null
+                && deposit.getAmount().compareTo(amount) > 0);
+    }
+
     @Override
     public Set<String> getResult() {
         return group;
-    }
-
-    @And("^deposit more than (\\d+)$")
-    public void depositMoreThan(BigDecimal amount) throws Throwable {
-        assert deposit != null
-                && deposit.getAmount() != null
-                && deposit.getAmount().compareTo(amount) > 0;
     }
 }

@@ -29,7 +29,7 @@ function welcomeController($scope, $http, feature) {
                 $scope.statistic.errors.push({name: "entriesInNullGroup", value: groupStat.count})
             }
         }
-        if (totalDistributions > data.variants) {
+        if (totalDistributions > data.distributions.length) {
             $scope.statistic.errors.push({name: "totalDistributionsGtVariants", value: totalDistributions})
         }
     }
