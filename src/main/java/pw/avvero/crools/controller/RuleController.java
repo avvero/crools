@@ -5,7 +5,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import pw.avvero.crools.analize.DataSetExtractor;
 import pw.avvero.crools.service.RuleService;
 
 import java.io.BufferedWriter;

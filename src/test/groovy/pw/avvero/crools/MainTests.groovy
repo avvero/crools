@@ -38,7 +38,7 @@ class MainTests extends Specification{
         when:
         def result = [:]
         def distributions = [:]
-        def dataSet = ruleService.getDataSet()
+        def dataSet = ruleService.getFactDictionary()
         dataSet.countries.each {country ->
             dataSet.languages.each {language ->
                 dataSet.depositAmount.each {depositAmount ->

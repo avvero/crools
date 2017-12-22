@@ -7,14 +7,14 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Data
-public class DataSet {
+public class FactDictionary {
 
     private Set<String> countries = new HashSet<>();
     private Set<String> languages = new HashSet<>();
     private Set<BigDecimal> depositAmount = new HashSet<>();
     private Set<String> groups = new HashSet<>();
 
-    public DataSet() {
+    public FactDictionary() {
         countries.add(null);
         languages.add(null);
         depositAmount.add(null);

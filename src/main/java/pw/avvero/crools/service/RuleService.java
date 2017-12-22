@@ -12,8 +12,8 @@ import cucumber.runtime.java.JavaBackend;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Service;
-import pw.avvero.crools.analize.DataSet;
-import pw.avvero.crools.analize.DataSetExtractor;
+import pw.avvero.crools.analize.FactDictionary;
+import pw.avvero.crools.analize.FactDictionaryExtractor;
 import pw.avvero.crools.definition.GroupSelector;
 import pw.avvero.crools.definition.Rules;
 import pw.avvero.crools.domain.Client;
@@ -24,8 +24,6 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Stream;
-import java.util.stream.Stream.Builder;
 
 @Service
 public class RuleService {
@@ -60,32 +58,32 @@ public class RuleService {
         return execute(rules, "src/main/resources/group_distribution.feature");
     }
 
-    public DataSet getDataSet() throws IOException {
-        return getDataSet("src/main/resources/group_distribution.feature");
+    public FactDictionary getFactDictionary() throws IOException {
+        return getFactDictionary("src/main/resources/group_distribution.feature");
     }
 
-    public DataSet getDataSet(String feature) throws IOException {
-        DataSetExtractor rules = new DataSetExtractor();
+    public FactDictionary getFactDictionary(String feature) throws IOException {
+        FactDictionaryExtractor rules = new FactDictionaryExtractor();
         return execute(rules, feature);
     }
 
     public Map analise(String feature) throws IOException {
         Map result = new HashMap();
-        DataSet dataSet = getDataSet(feature);
+        FactDictionary factDictionary = getFactDictionary(feature);
         Map<String, GroupStat> groupStats = new HashMap<>();
         Map<String, Object> distributions = new HashMap<>();
         AtomicInteger variants = new AtomicInteger(0);
 
-        dataSet.getCountries().forEach(country -> {
-            dataSet.getLanguages().forEach(language -> {
-                dataSet.getDepositAmount().forEach(depositAmount -> {
+        factDictionary.getCountries().forEach(country -> {
+            factDictionary.getLanguages().forEach(language -> {
+                factDictionary.getDepositAmount().forEach(depositAmount -> {
                     variants.incrementAndGet();
                     analiseEntry(feature, country, language, depositAmount, groupStats);
                 });
             });
         });
 
-        result.put("dataSet", dataSet);
+        result.put("factDictionary", factDictionary);
         result.put("variants", variants);
         result.put("groupStats", groupStats.values());
         result.put("distributions", distributions);
