@@ -24,6 +24,8 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Stream;
+import java.util.stream.Stream.Builder;
 
 @Service
 public class RuleService {
@@ -97,29 +99,24 @@ public class RuleService {
                          Map<String, GroupStat> groupStats) {
         Client client = new Client(country, language);
         Deposit deposit = new Deposit(depositAmount);
-
+        Map<String, Object> facts = new HashMap<String, Object>() {
+            {
+                put("client", client);
+                put("deposit", deposit);
+            }
+        };
         Set<String> calculateGroups = execute(new GroupSelector(client, deposit), feature);
-
         if (calculateGroups == null || calculateGroups.isEmpty()) {
-            GroupStat groupStat = groupStats.computeIfAbsent(null, k -> new GroupStat(null));
-            groupStat.setCount(groupStat.getCount() + 1);
-            groupStat.getFacts().add(new HashMap<String, Object>() {
-                {
-                    put("client", client);
-                    put("deposit", deposit);
-                }
-            });
+            populateStatistics(null, groupStats, facts);
+        } else {
+            calculateGroups.forEach(calculatedGroup -> populateStatistics(calculatedGroup, groupStats, facts));
         }
-        calculateGroups.forEach(calculatedGroup -> {
-            GroupStat groupStat = groupStats.computeIfAbsent(calculatedGroup, k -> new GroupStat(calculatedGroup));
-            groupStat.setCount(groupStat.getCount() + 1);
-            groupStat.getFacts().add(new HashMap<String, Object>() {
-                {
-                    put("client", client);
-                    put("deposit", deposit);
-                }
-            });
-        });
+    }
+
+    private void populateStatistics(String calculatedGroup, Map<String, GroupStat> groupStats, Map<String, Object> facts) {
+        GroupStat groupStat = groupStats.computeIfAbsent(calculatedGroup, k -> new GroupStat(calculatedGroup));
+        groupStat.setCount(groupStat.getCount() + 1);
+        groupStat.getFacts().add(facts);
     }
 
     @Data
