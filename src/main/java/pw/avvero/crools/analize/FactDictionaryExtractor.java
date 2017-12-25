@@ -37,7 +37,7 @@ public class FactDictionaryExtractor implements Rules<FactDictionary> {
         factDictionary.getLanguages().add("foo");
     }
 
-    @When("^client language is not\"([^\"]*)\"$")
+    @When("^client language is not \"([^\"]*)\"$")
     public void clientLanguageIsNot(String code) throws Throwable {
         factDictionary.getLanguages().add(code);
         factDictionary.getLanguages().add("foo");

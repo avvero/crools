@@ -5,12 +5,84 @@
     </div>
     <div class="col-md-6">
         <h2>Analysis
-            <button ng-click="analyse(feature.text)">perform</button>
+            <button class="btn btn-info btn-group-xs" ng-click="analyse(feature.text)">perform</button>
         </h2>
-        <h3 ng-if="statistic.errors.length > 0">Errors</h3>
-        <div ng-repeat="error in statistic.errors">
-            <div ng-if="error.name == 'entriesInNullGroup'" class="bs-callout bs-callout-danger">
-                <h4>There are entries in &lt;null&gt; group</h4>
+        <ul class="nav nav-tabs">
+            <li class="{{analyseTab == 'checkList' ? 'active' : ''}}">
+                <a href="" ng-click="analyseTab = 'checkList'">Check list</a>
+            </li>
+            <li class="{{analyseTab == 'meta' ? 'active' : ''}}">
+                <a href="" ng-click="analyseTab = 'meta'">Metadata</a>
+            </li>
+        </ul>
+        <div class="panel" ng-if="analyseTab == 'checkList'">
+            <h4></h4>
+            <div class="row">
+                <div class="col-md-6">
+                    <canvas id="pie" class="chart chart-pie"
+                            chart-data="groupStatsData" chart-labels="groupStatsLabels" chart-options="options">
+                    </canvas>
+                </div>
+                <div class="col-md-6">
+
+                </div>
+            </div>
+            <!--<h3 ng-if="statistic.errors.length > 0">Errors</h3>-->
+            <div ng-repeat="error in statistic.errors">
+                <div ng-if="error.name == 'entriesInNullGroup'" class="bs-callout bs-callout-danger">
+                    <h4>Some entries have not been distributed
+                        <button type="button" class="btn btn-danger btn-group-xs" ng-click="showEntriesInNullGroup = !showEntriesInNullGroup">show</button>
+                    </h4>
+                    <table class="table" ng-if="showEntriesInNullGroup">
+                        <thead>
+                        <tr>
+                            <!--<th>#</th>-->
+                            <!--<th>group</th>-->
+                            <th>count</th>
+                            <th>entries</th>
+                        </tr>
+                        </thead>
+                        <tr ng-repeat="groupStat in data.groupStats" ng-if="groupStat.name == null">
+                            <!--<th scope="row">{{$index}}</th>-->
+                            <!--<td>{{groupStat.name || "&lt;null&gt;"}}</td>-->
+                            <td>{{groupStat.count}}</td>
+                            <td>
+                                <div ng-repeat="fact in groupStat.facts">{{fact}}</div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div ng-if="error.name == 'totalDistributionsGtVariants'" class="bs-callout bs-callout-danger">
+                    <h4>Some entries have been distributed to more than one group
+                        <button type="button" class="btn btn-danger btn-group-xs" ng-click="showTotalDistributionsGtVariants = !showTotalDistributionsGtVariants">show</button>
+                    </h4>
+                    <table class="table" ng-if="showTotalDistributionsGtVariants">
+                        <tr ng-repeat="distribution in data.distributions" ng-if="distribution.groups && distribution.groups.length > 1">
+                            <th scope="row">{{$index}}</th>
+                            <td>
+                                <div ng-repeat="fact in distribution.facts">{{fact}}</div>
+                            </td>
+                            <td>
+                                <div ng-repeat="group in distribution.groups">{{group}}</div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <!--<h3>warnings</h3>-->
+            <div>
+                <div ng-if="false" class="bs-callout bs-callout-warning">
+                    <h4>warning</h4>
+                </div>
+            </div>
+        </div>
+        <div ng-if="analyseTab == 'meta'">
+            <h3>factDictionary</h3>
+            <p>{{data.factDictionary}}</p>
+            <h3>distributions</h3>
+            <p>size: {{data.distributions.length}}</p>
+            <h3>groups distributions</h3>
+            <div>
                 <table class="table">
                     <thead>
                     <tr>
@@ -20,7 +92,8 @@
                         <th>variants</th>
                     </tr>
                     </thead>
-                    <tr ng-repeat="groupStat in data.groupStats" ng-if="groupStat.name == null">
+                    <tbody>
+                    <tr ng-repeat="groupStat in data.groupStats">
                         <th scope="row">{{$index}}</th>
                         <td>{{groupStat.name || "&lt;null&gt;"}}</td>
                         <td>{{groupStat.count}}</td>
@@ -28,55 +101,11 @@
                             <div ng-repeat="fact in groupStat.facts">{{fact}}</div>
                         </td>
                     </tr>
+                    </tbody>
                 </table>
             </div>
-            <div ng-if="error.name == 'totalDistributionsGtVariants'" class="bs-callout bs-callout-danger">
-                <h4>Some entries goes to more than one group</h4>
-                <table class="table">
-                    <tr ng-repeat="distribution in data.distributions" ng-if="distribution.groups && distribution.groups.length > 1">
-                        <th scope="row">{{$index}}</th>
-                        <td>
-                            <div ng-repeat="fact in distribution.facts">{{fact}}</div>
-                        </td>
-                        <td>{{distribution.groups}}</td>
-                    </tr>
-                </table>
-            </div>
+            <h3>distributions</h3>
+            <p>{{data.distributions}}</p>
         </div>
-        <h3>warnings</h3>
-        <div>
-            <div ng-if="false" class="bs-callout bs-callout-warning">
-                <h4>warning</h4>
-            </div>
-        </div>
-        <h3>factDictionary</h3>
-        <p>{{data.factDictionary}}</p>
-        <h3>distributions</h3>
-        <p>size: {{data.distributions.length}}</p>
-        <h3>groups distributions</h3>
-        <div>
-            <table class="table">
-                <thead>
-                <tr>
-                    <th>#</th>
-                    <th>group</th>
-                    <th>count</th>
-                    <th>variants</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr ng-repeat="groupStat in data.groupStats">
-                    <th scope="row">{{$index}}</th>
-                    <td>{{groupStat.name || "&lt;null&gt;"}}</td>
-                    <td>{{groupStat.count}}</td>
-                    <td>
-                        <div ng-repeat="fact in groupStat.facts">{{fact}}</div>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-        <h3>distributions</h3>
-        <p>{{data.distributions}}</p>
     </div>
 </div>

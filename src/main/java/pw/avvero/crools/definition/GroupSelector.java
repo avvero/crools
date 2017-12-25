@@ -41,7 +41,7 @@ public class GroupSelector implements Rules<Set<String>> {
         Assert.isTrue(code.equals(client.getLanguage()));
     }
 
-    @When("^client language is not\"([^\"]*)\"$")
+    @When("^client language is not \"([^\"]*)\"$")
     public void clientLanguageIsNot(String code) throws Throwable {
         Assert.isTrue(!code.equals(client.getLanguage()));
     }

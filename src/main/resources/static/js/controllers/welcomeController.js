@@ -1,5 +1,12 @@
 function welcomeController($scope, $http, feature) {
     $scope.feature = feature
+    $scope.groupStatsLabels = []
+    $scope.groupStatsData = []
+    //view
+    $scope.analyseTab = 'checkList'
+    $scope.showEntriesInNullGroup = false
+    $scope.showTotalDistributionsGtVariants = false
+    //
 
     $scope.data = {}
     $scope.analyse = function (data) {
@@ -12,6 +19,7 @@ function welcomeController($scope, $http, feature) {
             .success(function (data) {
                 $scope.data = data
                 $scope.collectStatistics(data)
+                $scope.drawGraphics(data)
             })
             .error(function (error) {
                 console.error(error)
@@ -33,6 +41,17 @@ function welcomeController($scope, $http, feature) {
             $scope.statistic.errors.push({name: "totalDistributionsGtVariants", value: totalDistributions})
         }
     }
+    $scope.drawGraphics = function (data) {
+        $scope.groupStatsLabels = []
+        $scope.groupStatsData = []
+        for (var i = 0; i < data.groupStats.length; i++) {
+            $scope.groupStatsLabels.push(data.groupStats[i].name)
+            $scope.groupStatsData.push(data.groupStats[i].count)
+        }
+    }
+
+    // init
+    $scope.analyse($scope.feature.text)
 }
 
 welcomeController.resolve = {
