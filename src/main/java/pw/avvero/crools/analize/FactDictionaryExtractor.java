@@ -1,5 +1,6 @@
 package pw.avvero.crools.analize;
 
+import cucumber.api.CucumberOptions;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
@@ -10,6 +11,10 @@ import pw.avvero.crools.definition.Rules;
 import java.math.BigDecimal;
 
 @Data
+@CucumberOptions(
+        strict = true,
+        plugin = {"pw.avvero.crools.ValidationPlugin"}
+)
 public class FactDictionaryExtractor implements Rules<FactDictionary> {
 
     private FactDictionary factDictionary = new FactDictionary();

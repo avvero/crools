@@ -20,12 +20,12 @@ class MainTests extends Specification{
         where:
         country | language | depositAmount | group
         "CHL"   | null     | null          | "Chile"
-        "RUS"   | null     | null          | "Russia"
+//        "RUS"   | null     | null          | "Russia"
 //        "RUS"   | "rus"    | null          | "Russia"
 //        "RUS"   | "eng"    | null          | "EnRussia"
 //        "RUS"   | null     | 999           | "Russia"
 //        "RUS"   | null     | 1000          | "Russia"
-        "RUS"   | null     | 1001          | "RichRussia"
+//        "RUS"   | null     | 1001          | "RichRussia"
 //        "RUS"   | "eng"    | 1001          | "EnRussia"
     }
 

@@ -23,6 +23,7 @@ function welcomeController($scope, $http, feature) {
             })
             .error(function (error) {
                 console.error(error)
+                alert(error.message)
             });
     }
     $scope.collectStatistics = function (data) {

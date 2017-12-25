@@ -1,6 +1,6 @@
 package pw.avvero.crools.definition;
 
-import cucumber.api.PendingException;
+import cucumber.api.CucumberOptions;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
@@ -12,6 +12,10 @@ import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
+@CucumberOptions(
+        strict = true,
+        plugin = {"pw.avvero.crools.ValidationPlugin"}
+)
 public class GroupSelector implements Rules<Set<String>> {
 
     public Client client;
