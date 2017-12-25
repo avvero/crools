@@ -10,7 +10,6 @@ buildscript {
     }
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
-        classpath "gradle.plugin.com.boxfuse.client:flyway-release:4.0.3"
     }
 }
 
@@ -30,9 +29,7 @@ dependencies {
 
     compile 'info.cukes:cucumber-java8:1.2.5'
     compile 'org.projectlombok:lombok:1.16.6'
-    // https://mvnrepository.com/artifact/org.spockframework/spock-core
-    testCompile group: 'org.spockframework', name: 'spock-core', version: '1.1-groovy-2.4'
-
+    testCompile 'org.spockframework:spock-core:1.1-groovy-2.4'
 }
 
 bootRun {
