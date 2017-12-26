@@ -11,17 +11,5 @@ RUN apt-get update -y && \
 RUN echo debconf shared/accepted-oracle-license-v1-1 select true | debconf-set-selections
 RUN apt-get install oracle-java8-installer -y
 
-WORKDIR /tmp
-
-RUN git clone https://github.com/avvero/crools.git
-
-WORKDIR crools
-
-RUN chmod +x ./gradlew
-
-RUN ./gradlew build
-
-#RUN java -Dserver.port=$PORT -Dspring.profiles.active=def $JAVA_OPTS -jar build/libs/*.war
-ENTRYPOINT ["./gradlew"]
-
-EXPOSE 8088
+ADD build/install/crools /crools
+ENTRYPOINT ["/crools/bin/crools"]

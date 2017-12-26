@@ -24,13 +24,14 @@ import java.util.HashMap;
 @RequestMapping(value = "/api")
 public class RuleController {
 
+    public static final String FEATURE = "src/main/resources/group_distribution.feature";
+
     @Autowired
     private FeatureService featureService;
 
     @RequestMapping(value = "/feature", method = RequestMethod.GET)
     public Object feature() throws IOException {
-        String path = "src/main/resources/group_distribution.feature";
-        String feature = new String(Files.readAllBytes(Paths.get(path)), Charset.defaultCharset());
+        String feature = new String(Files.readAllBytes(Paths.get(FEATURE)), Charset.defaultCharset());
         return new HashMap<String, String>() {{
             put("text", feature);
         }};
