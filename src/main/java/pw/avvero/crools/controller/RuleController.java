@@ -5,7 +5,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import pw.avvero.crools.service.RuleService;
+import pw.avvero.crools.impl.group_destribution.GroupDistributionImpl;
+import pw.avvero.crools.service.FeatureService;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -24,7 +25,7 @@ import java.util.HashMap;
 public class RuleController {
 
     @Autowired
-    private RuleService ruleService;
+    private FeatureService featureService;
 
     @RequestMapping(value = "/feature", method = RequestMethod.GET)
     public Object feature() throws IOException {
@@ -48,7 +49,9 @@ public class RuleController {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        return ruleService.analise(temp.getPath());
+
+        GroupDistributionImpl groupDistribution = new GroupDistributionImpl(temp.getPath());
+        return groupDistribution.analyse(featureService);
     }
 
 }

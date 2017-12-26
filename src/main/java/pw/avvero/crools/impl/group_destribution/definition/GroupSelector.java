@@ -1,4 +1,4 @@
-package pw.avvero.crools.definition;
+package pw.avvero.crools.impl.group_destribution.definition;
 
 import cucumber.api.CucumberOptions;
 import cucumber.api.java.en.And;
@@ -7,6 +7,7 @@ import cucumber.api.java.en.When;
 import org.springframework.util.Assert;
 import pw.avvero.crools.domain.Client;
 import pw.avvero.crools.domain.Deposit;
+import pw.avvero.crools.impl.Definition;
 
 import java.math.BigDecimal;
 import java.util.HashSet;
@@ -16,11 +17,11 @@ import java.util.Set;
         strict = true,
         plugin = {"pw.avvero.crools.ValidationPlugin"}
 )
-public class GroupSelector implements Rules<Set<String>> {
+public class GroupSelector implements Definition<Set<String>> {
 
     public Client client;
     public Deposit deposit;
-    public Set<String> group = new HashSet<>();
+    public Set<String> groups = new HashSet<>();
 
     public GroupSelector() {
     }
@@ -52,7 +53,7 @@ public class GroupSelector implements Rules<Set<String>> {
 
     @Then("^group will be \"([^\"]*)\"$")
     public void groupWillBe(String code) throws Throwable {
-        group.add(code);
+        groups.add(code);
     }
 
     @And("^deposit more than (\\d+)$")
@@ -64,6 +65,6 @@ public class GroupSelector implements Rules<Set<String>> {
 
     @Override
     public Set<String> getResult() {
-        return group;
+        return groups;
     }
 }

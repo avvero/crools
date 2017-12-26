@@ -1,12 +1,11 @@
-package pw.avvero.crools.analize;
+package pw.avvero.crools.impl.group_destribution.extraction;
 
 import cucumber.api.CucumberOptions;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import lombok.Data;
-import org.springframework.util.Assert;
-import pw.avvero.crools.definition.Rules;
+import pw.avvero.crools.impl.FactExtractor;
 
 import java.math.BigDecimal;
 
@@ -15,7 +14,7 @@ import java.math.BigDecimal;
         strict = true,
         plugin = {"pw.avvero.crools.ValidationPlugin"}
 )
-public class FactDictionaryExtractor implements Rules<FactDictionary> {
+public class FactDictionaryExtractor implements FactExtractor<FactDictionary> {
 
     private FactDictionary factDictionary = new FactDictionary();
 

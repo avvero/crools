@@ -1,4 +1,4 @@
-package pw.avvero.crools.analize;
+package pw.avvero.crools.impl.group_destribution.extraction;
 
 import lombok.Data;
 
