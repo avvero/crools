@@ -30,8 +30,9 @@
             <!--<h3 ng-if="statistic.errors.length > 0">Errors</h3>-->
             <div ng-repeat="error in statistic.errors">
                 <div ng-if="error.name == 'entriesInNullGroup'" class="bs-callout bs-callout-danger">
-                    <h4>Some entries have not been distributed
-                        <button type="button" class="btn btn-danger btn-group-xs" ng-click="showEntriesInNullGroup = !showEntriesInNullGroup">show</button>
+                    <h4 ng-click="showEntriesInNullGroup = !showEntriesInNullGroup" class="pointer">
+                        Some entries have not been distributed
+                        <button type="button" class="btn btn-danger btn-group-xs">show</button>
                     </h4>
                     <table class="table" ng-if="showEntriesInNullGroup">
                         <thead>
@@ -53,8 +54,9 @@
                     </table>
                 </div>
                 <div ng-if="error.name == 'totalDistributionsGtVariants'" class="bs-callout bs-callout-danger">
-                    <h4>Some entries have been distributed to more than one group
-                        <button type="button" class="btn btn-danger btn-group-xs" ng-click="showTotalDistributionsGtVariants = !showTotalDistributionsGtVariants">show</button>
+                    <h4 ng-click="showTotalDistributionsGtVariants = !showTotalDistributionsGtVariants" class="pointer">
+                        Some entries have been distributed to more than one group
+                        <button type="button" class="btn btn-danger btn-group-xs">show</button>
                     </h4>
                     <table class="table" ng-if="showTotalDistributionsGtVariants">
                         <tr ng-repeat="distribution in data.distributions" ng-if="distribution.groups && distribution.groups.length > 1">
