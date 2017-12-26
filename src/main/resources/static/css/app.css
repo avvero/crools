@@ -1,3 +1,16 @@
 .pointer {
     cursor: pointer;
 }
+
+.fact {
+    display: inline-flex;
+}
+
+.fact .key {
+    font-weight: bolder;
+    vertical-align: middle;
+}
+
+.fact .value {
+
+}
