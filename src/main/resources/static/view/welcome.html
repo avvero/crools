@@ -27,7 +27,6 @@
 
                 </div>
             </div>
-            <!--<h3 ng-if="statistic.errors.length > 0">Errors</h3>-->
             <div ng-repeat="error in statistic.errors">
                 <div ng-if="error.name == 'entriesInNullGroup'" class="bs-callout bs-callout-danger">
                     <h4 ng-click="showEntriesInNullGroup = !showEntriesInNullGroup" class="pointer">
@@ -78,6 +77,11 @@
             <div>
                 <div ng-if="false" class="bs-callout bs-callout-warning">
                     <h4>warning</h4>
+                </div>
+            </div>
+            <div>
+                <div ng-if="statistic.errors.length == 0" class="bs-callout bs-callout-success">
+                    <h4>Everything is fine</h4>
                 </div>
             </div>
         </div>
