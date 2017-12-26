@@ -15,8 +15,8 @@ public class FactDictionary {
     private Set<String> groups = new HashSet<>();
 
     public FactDictionary() {
-        countries.add(null);
-        languages.add(null);
+//        countries.add(null);
+//        languages.add(null);
         depositAmount.add(null);
         groups.add(null);
     }

@@ -48,6 +48,9 @@
                             <!--<td>{{groupStat.name || "&lt;null&gt;"}}</td>-->
                             <td>{{groupStat.count}}</td>
                             <td>
+                                <div ng-repeat="fact in groupStat.facts">#{{$index}} {{fact}}</div>
+                            </td>
+                            <td>
                                 <div ng-repeat="fact in groupStat.facts">#{{$index}} <fact value="fact"/></div>
                             </td>
                         </tr>

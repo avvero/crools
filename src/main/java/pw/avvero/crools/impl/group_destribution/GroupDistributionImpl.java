@@ -37,7 +37,8 @@ public class GroupDistributionImpl extends FeatureAnalyzer {
                         put("client", client);
                         put("deposit", deposit);
                     }};
-                    Set<String> calculatedGroups = featureService.execute(new GroupSelector(client, deposit), feature);
+                    Set<String> calculatedGroups = featureService.execute(new GroupSelector(client, deposit,
+                            factDictionary), feature);
                     analyseEntry(facts, calculatedGroups, groupStats);
                     distributions.add(new Distribution(facts, calculatedGroups));
                 });

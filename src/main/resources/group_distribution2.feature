@@ -21,6 +21,12 @@ Feature: Select group
   Scenario: Default group will be chosen for RUS
      When client country is "RUS"
      When client language is not "eng"
+     And deposit is null
+     Then group will be "Russia"
+
+  Scenario: Default group will be chosen for RUS
+     When client country is "RUS"
+     When client language is not "eng"
      And deposit >= 1000
      Then group will be "RichRussia"
 

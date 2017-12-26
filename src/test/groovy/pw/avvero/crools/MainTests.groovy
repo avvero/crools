@@ -19,18 +19,21 @@ class MainTests extends Specification{
     @Unroll
     def "For country #country group will be #group"() {
         expect:
+        def dataSet = featureService.extractFacts(new FactDictionaryExtractor(), FEATURE)
         featureService.execute(new GroupSelector(new Client(country: country, language: language),
-                new Deposit(amount: depositAmount)), FEATURE) == [group] as Set
+                new Deposit(amount: depositAmount), dataSet), FEATURE) == [group] as Set
         where:
         country | language | depositAmount | group
-        "CHL"   | null     | null          | "Chile"
-        "RUS"   | null     | null          | "Russia"
-        "RUS"   | "rus"    | null          | "Russia"
-        "RUS"   | "eng"    | null          | "EnRussia"
-        "RUS"   | null     | 999           | "Russia"
-        "RUS"   | null     | 1000          | "Russia"
-        "RUS"   | null     | 1001          | "RichRussia"
-        "RUS"   | "eng"    | 1001          | "EnRussia"
+        "RUS"   | "any"    | 999           | "Russia"
+//        null    | null     | null          | "Default"
+//        "CHL"   | null     | null          | "Chile"
+//        "RUS"   | null     | null          | "Russia"
+//        "RUS"   | "rus"    | null          | "Russia"
+//        "RUS"   | "eng"    | null          | "EnRussia"
+//        "RUS"   | null     | 999           | "Russia"
+//        "RUS"   | null     | 1000          | "Russia"
+//        "RUS"   | null     | 1001          | "RichRussia"
+//        "RUS"   | "eng"    | 1001          | "EnRussia"
     }
 
     def "Extract dataset"() {
