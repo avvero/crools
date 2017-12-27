@@ -20,15 +20,21 @@ public class FactDictionary {
     private Set<String> groups = new HashSet<>();
 
     public FactDictionary() {
-//        countries.add(null);
-//        languages.add(null);
+        countries.add(null);
+        languages.add(null);
         depositAmount.add(null);
         groups.add(null);
     }
 
     public void eachVariant(Consumer<Map<String, Object>> c) {
         countries.forEach(country -> {
+            //todo required field
+//            if (country == null) return;
+
             languages.forEach(language -> {
+                //todo required field
+//                if (language == null) return;
+
                 depositAmount.forEach(depositAmount -> {
                     Client client = new Client(country, language);
                     Deposit deposit = new Deposit(depositAmount);
