@@ -24,7 +24,7 @@ import java.util.HashMap;
 @RequestMapping(value = "/api")
 public class RuleController {
 
-    public static final String FEATURE = "src/main/resources/group_distribution.feature";
+    public static final String FEATURE = "classpath:group_distribution.feature";
 
     @Autowired
     private FeatureService featureService;

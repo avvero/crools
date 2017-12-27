@@ -11,7 +11,7 @@ import spock.lang.Unroll
 
 class MainTests extends Specification{
 
-    public static final String FEATURE = "src/main/resources/group_distribution.feature"
+    public static final String FEATURE = "classpath:group_distribution.feature"
 
     @Shared
     def featureService = new FeatureService()
