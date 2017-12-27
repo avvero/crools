@@ -1,5 +1,7 @@
 package pw.avvero.crools.controller;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -7,15 +9,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import pw.avvero.crools.service.FeatureService;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.HashMap;
 
 /**
@@ -32,8 +29,8 @@ public class RuleController {
 
     @RequestMapping(value = "/feature", method = RequestMethod.GET)
     public Object feature() throws IOException, URISyntaxException {
-        URL path = this.getClass().getClassLoader().getResource(FEATURE);
-        String feature = new String(Files.readAllBytes(Paths.get(path.toURI())), Charset.defaultCharset());
+        InputStream in = this.getClass().getClassLoader().getResourceAsStream(FEATURE);
+        String feature = IOUtils.toString(in, Charset.defaultCharset());
         return new HashMap<String, String>() {{
             put("text", feature);
         }};

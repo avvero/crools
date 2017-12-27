@@ -29,6 +29,8 @@ dependencies {
 
     compile 'info.cukes:cucumber-java8:1.2.5'
     compile 'org.projectlombok:lombok:1.16.6'
+    compile 'commons-io:commons-io:2.6'
+
     testCompile 'org.spockframework:spock-core:1.1-groovy-2.4'
 }
 
