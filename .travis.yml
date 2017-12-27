@@ -7,7 +7,7 @@ env:
 script:
   - ./gradlew build
   - ./gradlew installDist
-  - docker login -u $DOCKER_HUB_LOGIN -p $DOCKER_HUB_PASSWORD hub.docker.com
+  - docker login -u $DOCKER_HUB_LOGIN -p $DOCKER_HUB_PASSWORD
   - docker build --pull -t $SERVICE_GROUP/$SERVICE_NAME:$SERVICE_VERSION .
   - docker push $SERVICE_GROUP/$SERVICE_NAME:$SERVICE_VERSION
   - docker build --pull -t $SERVICE_GROUP/$SERVICE_NAME:latest .
