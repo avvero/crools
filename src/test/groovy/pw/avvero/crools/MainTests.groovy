@@ -20,8 +20,11 @@ class MainTests extends Specification{
     def "For country #country group will be #group"() {
         expect:
         def dataSet = featureService.extractFacts(new FactDictionaryExtractor(), FEATURE)
-        featureService.execute(new GroupSelector(new Client(country: country, language: language),
-                new Deposit(amount: depositAmount), dataSet), FEATURE) == [group] as Set
+        def facts = [
+                client: new Client(country: country, language: language),
+                depost: new Deposit(amount: depositAmount)
+        ]
+        featureService.execute(new GroupSelector(facts, dataSet), FEATURE) == [group] as Set
         where:
         country | language | depositAmount | group
         "RUS"   | "any"    | 999           | "Russia"
