@@ -10,10 +10,14 @@ import org.springframework.stereotype.Service;
 import pw.avvero.crools.impl.Definition;
 import pw.avvero.crools.impl.FactExtractor;
 import pw.avvero.crools.impl.NewJavaObjectFactory;
+import pw.avvero.crools.impl.group_destribution.Distribution;
+import pw.avvero.crools.impl.group_destribution.GroupStat;
+import pw.avvero.crools.impl.group_destribution.definition.GroupSelector;
+import pw.avvero.crools.impl.group_destribution.extraction.FactDictionary;
+import pw.avvero.crools.impl.group_destribution.extraction.FactDictionaryExtractor;
 
 import java.io.IOException;
-import java.util.Collection;
-import java.util.Collections;
+import java.util.*;
 
 @Service
 public class FeatureService {
@@ -47,5 +51,36 @@ public class FeatureService {
         return execute(factExtractor, feature);
     }
 
+    public Map analyse(String feature) throws IOException {
+        Map result = new HashMap();
+        FactDictionary factDictionary = extractFacts(new FactDictionaryExtractor(), feature);
+        Map<String, GroupStat> groupStats = new HashMap<>();
+        Set<Distribution> distributions = new HashSet<>();
+
+        factDictionary.eachVariant(facts -> {
+            Set<String> calculatedGroups = execute(new GroupSelector(facts, factDictionary), feature);
+            analyseEntry(facts, calculatedGroups, groupStats);
+            distributions.add(new Distribution(facts, calculatedGroups));
+        });
+
+        result.put("factDictionary", factDictionary);
+        result.put("groupStats", groupStats.values());
+        result.put("distributions", distributions);
+        return result;
+    }
+
+    private void analyseEntry(Map<String, Object> facts, Set<String> calculatedGroups, Map<String, GroupStat> groupStats) {
+        if (calculatedGroups == null || calculatedGroups.isEmpty()) {
+            populateStatistics(null, groupStats, facts);
+        } else {
+            calculatedGroups.forEach(calculatedGroup -> populateStatistics(calculatedGroup, groupStats, facts));
+        }
+    }
+
+    private void populateStatistics(String calculatedGroup, Map<String, GroupStat> groupStats, Map<String, Object> facts) {
+        GroupStat groupStat = groupStats.computeIfAbsent(calculatedGroup, k -> new GroupStat(calculatedGroup));
+        groupStat.setCount(groupStat.getCount() + 1);
+        groupStat.getFacts().add(facts);
+    }
 
 }

@@ -13,6 +13,7 @@ import pw.avvero.crools.impl.group_destribution.extraction.FactDictionaryExtract
 
 import java.math.BigDecimal;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import static pw.avvero.crools.impl.group_destribution.extraction.FactDictionaryExtractor.ANY;
@@ -28,9 +29,9 @@ public class GroupSelector implements Definition<Set<String>> {
     private Set<String> groups = new HashSet<>();
     private FactDictionary factDictionary;
 
-    public GroupSelector(Client client, Deposit deposit, FactDictionary factDictionary) {
-        this.client = client;
-        this.deposit = deposit;
+    public GroupSelector(Map<String, Object> facts, FactDictionary factDictionary) {
+        this.client = (Client) facts.get("client");
+        this.deposit = (Deposit) facts.get("deposit");
         this.factDictionary = factDictionary;
     }
 

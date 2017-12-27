@@ -5,13 +5,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import pw.avvero.crools.impl.group_destribution.GroupDistributionImpl;
 import pw.avvero.crools.service.FeatureService;
 
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -24,14 +25,15 @@ import java.util.HashMap;
 @RequestMapping(value = "/api")
 public class RuleController {
 
-    public static final String FEATURE = "classpath:group_distribution.feature";
+    public static final String FEATURE = "group_distribution.feature";
 
     @Autowired
     private FeatureService featureService;
 
     @RequestMapping(value = "/feature", method = RequestMethod.GET)
-    public Object feature() throws IOException {
-        String feature = new String(Files.readAllBytes(Paths.get(FEATURE)), Charset.defaultCharset());
+    public Object feature() throws IOException, URISyntaxException {
+        URL path = this.getClass().getClassLoader().getResource(FEATURE);
+        String feature = new String(Files.readAllBytes(Paths.get(path.toURI())), Charset.defaultCharset());
         return new HashMap<String, String>() {{
             put("text", feature);
         }};
@@ -51,8 +53,7 @@ public class RuleController {
             throw new RuntimeException(e);
         }
 
-        GroupDistributionImpl groupDistribution = new GroupDistributionImpl(temp.getPath());
-        return groupDistribution.analyse(featureService);
+        return featureService.analyse(temp.getPath());
     }
 
 }

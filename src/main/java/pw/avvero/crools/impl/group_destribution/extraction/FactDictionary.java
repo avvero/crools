@@ -1,10 +1,15 @@
 package pw.avvero.crools.impl.group_destribution.extraction;
 
 import lombok.Data;
+import pw.avvero.crools.domain.Client;
+import pw.avvero.crools.domain.Deposit;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+import java.util.function.Consumer;
 
 @Data
 public class FactDictionary {
@@ -19,5 +24,21 @@ public class FactDictionary {
 //        languages.add(null);
         depositAmount.add(null);
         groups.add(null);
+    }
+
+    public void eachVariant(Consumer<Map<String, Object>> c) {
+        countries.forEach(country -> {
+            languages.forEach(language -> {
+                depositAmount.forEach(depositAmount -> {
+                    Client client = new Client(country, language);
+                    Deposit deposit = new Deposit(depositAmount);
+                    Map<String, Object> facts = new HashMap<String, Object>() {{
+                        put("client", client);
+                        put("deposit", deposit);
+                    }};
+                    c.accept(facts);
+                });
+            });
+        });
     }
 }
