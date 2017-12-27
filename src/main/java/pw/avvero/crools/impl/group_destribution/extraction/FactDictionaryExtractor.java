@@ -1,6 +1,7 @@
 package pw.avvero.crools.impl.group_destribution.extraction;
 
 import cucumber.api.CucumberOptions;
+import cucumber.api.DataTable;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
@@ -29,13 +30,18 @@ public class FactDictionaryExtractor implements FactExtractor<FactDictionary> {
     }
 
     @When("^client country is not \"([^\"]*)\"$")
-    public void clientCountryIsNot(String code) throws Throwable {
+    public void clientCountryIsNot(String code) {
         factDictionary.getCountries().add("not_" + code);
         factDictionary.getCountries().add(ANY);
     }
 
     @When("^client country is not defined$")
-    public void clientCountryIsNotDefined() throws Throwable {
+    public void clientCountryIsNotDefined() {
+    }
+
+    @When("^client country no in$")
+    public void clientCountryNotIn(DataTable dataTable) {
+        dataTable.raw().get(0).forEach(this::clientCountryIsNot);
     }
 
     @Then("^group will be \"([^\"]*)\"$")

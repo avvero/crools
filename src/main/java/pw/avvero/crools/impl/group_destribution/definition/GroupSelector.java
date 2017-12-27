@@ -1,6 +1,7 @@
 package pw.avvero.crools.impl.group_destribution.definition;
 
 import cucumber.api.CucumberOptions;
+import cucumber.api.DataTable;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
@@ -13,8 +14,11 @@ import pw.avvero.crools.impl.group_destribution.extraction.FactDictionaryExtract
 
 import java.math.BigDecimal;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static pw.avvero.crools.impl.group_destribution.extraction.FactDictionaryExtractor.ANY;
 
@@ -48,6 +52,11 @@ public class GroupSelector implements Definition<Set<String>> {
     @When("^client country is not defined$")
     public void clientCountryIsNotDefined() throws Throwable {
         Assert.isTrue(ANY.equals(client.getCountry()) || !factDictionary.getCountries().contains(client.getCountry()));
+    }
+
+    @When("^client country no in$")
+    public void clientCountryNotIn(DataTable dataTable) throws Throwable {
+        Assert.isTrue(!dataTable.raw().stream().flatMap(List::stream).collect(Collectors.toList()).contains(client.getCountry()));
     }
 
     @When("^client language is \"([^\"]*)\"$")

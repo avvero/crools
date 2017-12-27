@@ -2,7 +2,7 @@ Feature: Select group
 
   Scenario: England
      When client country is "ENG"
-     Then group will be "England "
+     Then group will be "England"
 
   Scenario: Chile
      When client country is "CHL"
@@ -12,16 +12,23 @@ Feature: Select group
      When client country is not defined
      Then group will be "Default"
 
-  Scenario: Default group will be chosen for RUS
-     When client country is "RUS"
-     When client language is not "eng"
-     And deposit < 1000
-     Then group will be "Russia"
+  Scenario: Default
+     When client country no in
+     |ENG|
+     |CHL|
+     |RUS|
+     Then group will be "Default"
 
   Scenario: Default group will be chosen for RUS
      When client country is "RUS"
      When client language is not "eng"
      And deposit is null
+     Then group will be "Russia"
+
+  Scenario: Default group will be chosen for RUS
+     When client country is "RUS"
+     When client language is not "eng"
+     And deposit < 1000
      Then group will be "Russia"
 
   Scenario: Default group will be chosen for RUS

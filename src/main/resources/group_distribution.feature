@@ -2,7 +2,7 @@ Feature: Select group
 
   Scenario: England
      When client country is "ENG"
-     Then group will be "England "
+     Then group will be "England"
 
   Scenario: Chile
      When client country is "CHL"
