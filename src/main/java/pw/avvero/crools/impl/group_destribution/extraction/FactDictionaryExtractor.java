@@ -18,21 +18,20 @@ import java.math.BigDecimal;
 )
 public class FactDictionaryExtractor implements FactExtractor<FactDictionary> {
     
-    public static final String ANY = "any";
-    public static final String OTHER = "other";
+    public static final String UNDEFINED = "undefined";
 
     private FactDictionary factDictionary = new FactDictionary();
 
     @When("^client country is \"([^\"]*)\"$")
     public void clientCountryIs(String code) throws Throwable {
         factDictionary.getCountries().add(code);
-        factDictionary.getCountries().add(ANY);
+        factDictionary.getCountries().add(UNDEFINED);
     }
 
     @When("^client country is not \"([^\"]*)\"$")
     public void clientCountryIsNot(String code) {
         factDictionary.getCountries().add("not_" + code);
-        factDictionary.getCountries().add(ANY);
+        factDictionary.getCountries().add(UNDEFINED);
     }
 
     @When("^client country is not defined$")
@@ -52,7 +51,7 @@ public class FactDictionaryExtractor implements FactExtractor<FactDictionary> {
     @When("^client language is \"([^\"]*)\"$")
     public void clientLanguageIs(String code) throws Throwable {
         factDictionary.getLanguages().add(code);
-        factDictionary.getLanguages().add(ANY);
+        factDictionary.getLanguages().add(UNDEFINED);
     }
 
     @When("^client language is not \"([^\"]*)\"$")

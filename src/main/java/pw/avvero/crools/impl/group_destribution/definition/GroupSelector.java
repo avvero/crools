@@ -10,17 +10,15 @@ import pw.avvero.crools.domain.Client;
 import pw.avvero.crools.domain.Deposit;
 import pw.avvero.crools.impl.Definition;
 import pw.avvero.crools.impl.group_destribution.extraction.FactDictionary;
-import pw.avvero.crools.impl.group_destribution.extraction.FactDictionaryExtractor;
 
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static pw.avvero.crools.impl.group_destribution.extraction.FactDictionaryExtractor.ANY;
+import static pw.avvero.crools.impl.group_destribution.extraction.FactDictionaryExtractor.UNDEFINED;
 
 @CucumberOptions(
         strict = true,
@@ -51,7 +49,7 @@ public class GroupSelector implements Definition<Set<String>> {
 
     @When("^client country is not defined$")
     public void clientCountryIsNotDefined() throws Throwable {
-        Assert.isTrue(ANY.equals(client.getCountry()) || !factDictionary.getCountries().contains(client.getCountry()));
+        Assert.isTrue(UNDEFINED.equals(client.getCountry()) || !factDictionary.getCountries().contains(client.getCountry()));
     }
 
     @When("^client country no in$")

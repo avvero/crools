@@ -1,20 +1,23 @@
-# Cucumber as rule engine
-# Использование cucumber в качестве движка бизнес правил
+# Cucumber as a rule engine
+# Использование cucumber в качестве движка бизнес правил и проверка
 
-В данной статье пойдет речь о создании прототипа приложения для проверки идеи использования **cucumber** в качестве движка бизнес-правил. 
-Два вопроса, на которые я бы хотел здесь ответить: "зачем?" и "как?".
+В данной статье я бы хотел поделиться с Вами идеей использования [cucumber](https://github.com/cucumber/cucumber) в качестве движка бизнес-правил и подходом к проверки таких правил.
 
-```
-Cucumber is a tool that supports Behaviour-Driven Development (BDD) - a software development process that aims to enhance software quality and reduce maintenance costs.
-Gherkin is a Business Readable, Domain Specific Language that lets you describe software's behaviour without detailing how that behaviour is implemented (https://github.com/cucumber/cucumber/wiki/Gherkin).
-```
+> Cucumber is a tool that supports Behaviour-Driven Development (BDD) - a software development process that aims to enhance software quality and reduce maintenance costs.
+Gherkin is a Business Readable, Domain Specific Language that lets you describe software's behaviour without detailing how that behaviour is implemented.
 
-## Зачем
-### Причина 1
-<kbd>TODO</kbd>
-### Причина 2
-Во многих проектах, где я принимаю участие, используется drools. Все это покрыто unit тестами, а кое где даже используются BDD тесты. В одном из таких проектах я заметил странную штуку - код BDD тестов сильно походит код drools правил. 
-Приведу пример правила из сервис распределения клиентов по группам в зависимости от различных факторов. Код на drools выглядит так:
+В примерах я буду ссылаться на приложение, которое решает задачу распределения клиентов по группам в зависимости от различных параметров. Требования к приложению такие:
+- для клиента должна быть выбрана группа согласно установленным правилам распределения
+- для каждого клиента должна быть выбрана только одна группа
+
+Клиенту могут быть присущи такие параметры: страна, идентификатор, язык и т.д.
+
+# Причины
+Причины побудившие заняться этим вопрос представлены ниже и я их даже пронумеровал, чтобы показать, что их больше 2.
+
+## Причина 1
+Во многих проектах, где я принимаю участие, используется drools. Правила строго покрываются unit тестами, а кое где даже используются BDD (Behaviour Driven Development) тесты с помощью cucumber. В одном из таких проектов я заметил странную штуку - код BDD тестов сильно походит на код drools правил. 
+Приведу пример. Код на drools выглядит так:
 ```drools
 rule "For client from country ENG group will be England"
 when
@@ -23,46 +26,86 @@ then
     insert(new Group("England"));
 end
 ```
-Тест выглядит так:
+Описание фичи ([cucumber feature](https://github.com/cucumber/cucumber/wiki/Feature-Introduction) на языке [gherkin](https://github.com/cucumber/cucumber/wiki/Gherkin)) в BDD тесте выглядит так:
 ```gherkin
   Scenario: For client from country ENG group will be England
-     When client country is "ENG"
+     When client's country is "ENG"
      Then group will be "England"
 ```
-Если абстрагироваться от синтаксиса - один в один! Пример по большей части синтетический, но тем не менее он честный - в реальном проекте все так и сложилось. При этом gherkin явно человекопонятнее, так почему бы сразу не писать на нем?
-__Проблема__: а чем тогда это тестировать ? drools ? :)
+Если абстрагироваться от синтаксиса - один в один! Пример по большей части синтетический, но тем не менее он честный - в реальном проекте все так и сложилось. По факту, наши ожидания описаны в двух местах двумя разными способами и кажется, что второй (gherkin) явно человекопонятнее. Так почему бы сразу не писать на нем?
 
-### Причина 3
-Предоставить бизнесу простой и понятный инструмент, позволяющий описывать свои намерения/требования к функционалу с помощью бизнес правил и применять их в режиме реального времени или хотя бы "быстрее чем обычно".
-Как упомянул выше, мы пользуем drools и любим его (хотя это наверное уже не те романтические чувства, а просто привычка). И для описанной выше задачи в экосистеме drools имеется инструмент - __drools workbench__, который обладает богатым функционалом. Но писать правила на drools совсем не просто и обмазывать их тестами совершенно обязательно. 
-__Проблема__: конечно можно дать бизнесу возможность модифицировать правила на живую, но как проверить правильность таких правок ? Бизнес будет писать тесты ? 
+## Причина 2
+Нужно предоставить заказчику (в данном случае "заказчик" это тот, кто формирует требования к приложению, использует его в своей экосистеме работы с клиентами нужным ему способом) простой и понятный инструмент, позволяющий описывать свои намерения/требования к функционалу с помощью бизнес правил и применять их в режиме реального времени. Т.е. в рамках нашего примера заказчик хочет сам менять правила распределения клиентов по группам, в то время как сейчас это делает программист - он имплементирует требования заказчика в виде правил, тестирует их unit тестами и тестировщиком (со всем присущим этому делу уважением) и поставляет их в составе новой версии приложениия. 
 
-## Как
-**Сucumber** не заточен под использования вне тестовой среды, но уговорами и угрозами удалось заставить его работать - на костылях, зато взлетел. Оказалось, что эти полдела самая простая часть. Сложные полдела - это придумать, как это можно проверить правильность написанных правил.
+Как я упомянул выше, мы пользуем drools и любим его (хотя это наверное уже не те романтические чувства, а просто привычка), и для решения озвученной проблемы в экосистеме drools имеется инструмент - __drools workbench__, который обладает богатым (и главное достаточным) функционалом. Но мне кажется, что давать заказчику этот инструмент "как есть" и пусть он пишет правила как му заблагорассудится - это сильно оптимистичная идея. Потому что drools - штука сложная и нужно быть как минимум специально обученным, чтобы в него суметь. При этом покрывать drools-правила тестами строго обязательно - это конечно мое мнение, но я его всем навязываю. 
+Для упрощения работы с __drools workbench__ можно воспользоваться следующим:
+- реализовать dsl с упрощенным синтаксисом
+- использовать disicion tables
 
-Принцип тестирования схож с методом тестирования, когда фигачат разные варианты 
-### Формирование датасета
-Фомиррование датасета, если через все возможные варианты фактов - очень долго. Как оптимизировать ?
+При этом таблицы - это другой уровень абстракции и больше конфигурация, чем имплементации через бизнес правила. 
+Drools dsl позволяет сделать так, что вместо 
+```drools
+when
+    Client(country == "ENG")
+then
+    insert(new Group("England"));
+end
+```
+можно написать так
+```drools
+when
+    client's country is "ENG"
+then
+    group will be "England"
+end
+```
+Dsl - это правильный путь и он лежит в ту степь, где __уже__ пасется cucumber с своим gherkin.
 
+## Причина 3
+Данная причина связана с проблемой тестирования и вытекает из предыдущих двух - не понятно, как заказчик будет тестировать правила, написанные собственноручно. Идеально - писать тесты, но я в это верю еще меньше, чем в заказчика, пишущего на drools. Минимум, что нужно сделать в этом случае программисту - предоставить общие тесты базовой логики. Например для нашего приложения описаны требования:
+>- для клиента должна быть выбрана группа согласно установленным правилам распределения
+>- для каждого клиента должна быть выбрана только одна группа
+
+и получается, что не зависимо от того, какие правила распределения будут написаны заказчиком, эти требования должны выполняться всегда. И мы можем это проверить так:
+- получить все возможные варианты значений параметров (страна клиента, язык и т.д.)
+- построить набор всех комбинаций возможных вариантов параметров
+- расчитать для каждой комбинации группу
+- проверить выполнение условий
+
+# Реализация
+**Сucumber** не заточен под использования вне тестовой среды, но уговорами и угрозами удалось заставить его работать. Пример можно посмотреть тут  https://github.com/avvero/crools - да, плохой код и костыли, но главное что цель достигнута, "It's Alive!!!". Собственно cucumber в качестве движка бизнес правил использовать можно и на этом тут все. 
+
+# Тестирование 
+Для взятого примера нам нужно протестировать следующее:
+1. для клиента должна быть выбрана группа согласно установленным правилам распределения
+2. для каждого клиента должна быть выбрана только одна группа
+3. для набора параметров А выбирается группа Б
+При этом 1 и 2 пункт - это общие требования, они не зависят от конкретных правил распределения, которые имплементировал/имплементирует заказчик, поэтому подготовить тесты для проверки их выполнения можно заранее и прогонять при изменения правил распределения. Предлагается сделать через формирование датасета - набора всех комбинаций возможных вариантов параметров. Строится он интуитивно понятно и благодаря текущей реализации cucumber довольно просто. Почему интуитивно понятно? Приведу пример:
 Если взять условие
+```
 client's country is 'RUS'
-то я бы написал тест для таких значений страны
+```
+, то я бы написал unit-тест для таких значений страны
 - null
 - RUS
-- foo (not RUS)
+- undefined
 
-Если взять условие
+Если взять условия
+```
 client's country is 'RUS'
 client's country is 'CHL'
-то я бы написал тест для таких значений страны
+```
+, то я бы написал unit-тест для таких значений страны
 - null
 - RUS
 - CHL
-- foo (not RUS)
+- undefined
 
 Если взять условие
+```
 client's payment > '1000'
-то я бы написал тест для таких значений
+```
+, то я бы написал unit-тест для таких значений
 - null
 - 0
 - 999
@@ -70,115 +113,140 @@ client's payment > '1000'
 - 1001
 - -1000
 
-В целом, думаю логика понятна. Таким образом можно сформировать необходимый и достаточный датасет для теста.
-
-В силу того, что цель предоставить бизнесу имеено готовый язык, то программисту придется заранее подготовить логику распарсивания gerkin конструкций, следовательно он может подготовить и датасет!
-Т.е. помимо предоставления дифинишн файла реализовать и датасетформироватор.
+Таким образом все необходимые варианты для параметров можно получить из самих правил! А комбинации вариантов можно получить просто перемешиванием.
 
 ----
+Для тех, кто не знаком с cucumber
+Правила, описываемые в feature файле (на языке gherkin), должны быть поддержаны в definition файле (я использую java реализацию). Поддержка в данном случае - это возможность сопоставить (через регулярку) запись из feature файла методу из definition файла, иначе запись будет не понятна и не будет обработана (либо ошибка, либо игнорирование целого правила). Например для 
+```gherkin
+  Scenario: For client from country ENG group will be England
+     When client's country is "ENG"
+     Then group will be "England"
+```
+должны быть описаны методы
+```java
+    private Set<String> groups = new HashSet<>();
+    
+    @When("^client country is \"([^\"]*)\"$")
+    public void clientCountryIs(String code) throws Throwable {
+        Assert.isTrue(code.equals(client.getCountry()));
+    }
+    @Then("^group will be \"([^\"]*)\"$")
+    public void groupWillBe(String code) throws Throwable {
+        groups.add(code);
+    }
+```
+
+Получается, что в definition файле описываются все возможные выражения, которые можно применять при описании сценариев. 
+
+----
+
+Получение вариантов параметров можно реализовать путем описания дополнительного definition файла с реализацией методов таким образом
+```java
+    @When("^client's country is \"([^\"]*)\"$")
+    public void clientCountryIs(String code) throws Throwable {
+        factDictionary.getCountries().add(null);
+        factDictionary.getCountries().add(code);
+        factDictionary.getCountries().add(UNDEFINED);
+    }
+```
+Т.е. разработчик помимо основого definition файла, формирующего возможности при описании сценариев, предоставляет еще и дополнительный, позволяющий извлекать датасет.
+
+Давайте разберем пару примеров такого тестирования (можно самостоятельно и тут http://avvero.pw:8088/#/)
+### Пример 1
 ```
 Feature: Select group
-
   Scenario: England
      When client country is "ENG"
-     Then group will be "England "
-
-  Scenario: Chile
-     When client country is "CHL"
-     Then group will be "Chile"
-
-  Scenario: Russia
-     When client country is "RUS"
-     Then group will be "Russia"
-
-  Scenario: Default group will be chosen for RUS
-     When client country is "RUS"
-     When client language is not "eng"
-     Then group will be "Russia"
-
-  Scenario: Default group will be chosen for RUS
-     When client country is "RUS"
-     When client language is not "eng"
-     And deposit more than 1000
-     Then group will be "RichRussia"
-
-  Scenario: Experiment group will be chosen for CHL
-     When client country is "RUS"
-     When client language is "eng"
-     Then group will be "EnRussia"
+     Then group will be "England"
 ```
-
+Результат проверки:
 ```
-Feature: Select group
-
-  Scenario: England
-     When client country is "ENG"
-     Then group will be "England "
-
-  Scenario: Chile
-     When client country is "CHL"
-     Then group will be "Chile"
-
-  Scenario: Russia
-     When client country is "RUS"
-     Then group will be "Russia"
-
-  Scenario: Client country is not defined
-     When client country is not defined
-     Then group will be "Default"
-
-  Scenario: Default group will be chosen for RUS
-     When client country is "RUS"
-     When client language is not "eng"
-     Then group will be "Russia"
-
-  Scenario: Default group will be chosen for RUS
-     When client country is "RUS"
-     When client language is not "eng"
-     And deposit more than 1000
-     Then group will be "RichRussia"
-
-  Scenario: Experiment group will be chosen for CHL
-     When client country is "RUS"
-     When client language is "eng"
-     Then group will be "EnRussia"
-```
-
-Допустим есть такие правила
-```
-Feature: Select group
-
-  Scenario: England
-     When client country is "ENG"
-     Then group will be "England "
-
-  Scenario: Chile
-     When client country is "CHL"
-     Then group will be "Chile"
-```
-Анализ говорит нам, что 
-```
-Some entries have not been distributed  show
-count	entries
-2	
+Some entries have not been distributed:
 #0 {"client":{},"deposit":{}}
 #1 {"client":{"country":"any"},"deposit":{}}
 ```
-В данной ситуации мы можем сделать следующее
+Значит нужно добавить еще одно правило
 ```
 Feature: Select group
-
   Scenario: England
      When client country is "ENG"
-     Then group will be "England "
-
-  Scenario: Chile
-     When client country is "CHL"
-     Then group will be "Chile"
-
+     Then group will be "England"
+  Scenario: Default
+     When client country is not "ENG"
+     Then group will be "Default"
+ ```
+### Пример 2
+```
+Feature: Select group
+  Scenario: England
+     When client country is "ENG"
+     Then group will be "England"
+  Scenario: Russia
+     When client country is "RUS"
+     Then group will be "Russia"
+  Scenario: RichRussia
+     When client country is "RUS"
+     And deposit >= 1000
+     Then group will be "RichRussia"
+```
+Результат проверки:
+```
+Some entries have not been distributed
+#0 {"client":{"country":"any"},"deposit":{"amount":999}}
+#1 {"client":{},"deposit":{"amount":1001}}
+#2 {"client":{"country":"any"},"deposit":{"amount":1001}}
+...
+Some entries have been distributed to more than one group
+{"client":{"country":"RUS"}, {"amount":1001}}: Russia, RichRussia
+```
+Исправим проблему с попаданием в более одну группу добавив условие `And deposit < 1000`
+```
+  Scenario: Russia
+     When client country is "RUS"
+     And deposit is null
+     Then group will be "Russia"
+  Scenario: Russia
+     When client country is "RUS"
+     And deposit < 1000
+     Then group will be "Russia"
+ ```
+ А проблему с отсутствием правил для части вариантов таким правилом
+ ```
+   Scenario: Default
+     When client country no in
+     |ENG|
+     |RUS|
+     Then group will be "Default"
+ ```
+ Получается, что "хороший" набор правил будет выглядеть так
+ ```
+ Feature: Select group
+  Scenario: England
+     When client country is "ENG"
+     Then group will be "England"
+  Scenario: Russia
+     When client country is "RUS"
+     And deposit is null
+     Then group will be "Russia"
+  Scenario: Russia
+     When client country is "RUS"
+     And deposit < 1000
+     Then group will be "Russia"
+  Scenario: RichRussia
+     When client country is "RUS"
+     And deposit >= 1000
+     Then group will be "RichRussia"
   Scenario: Default
      When client country no in
      |ENG|
-     |CHL|
+     |RUS|
      Then group will be "Default"
-```
+ ```
+Таким образом сформированный датасет дает нам представлени о множестве значений параметров и их комбинаций. И на основе него мы можем уже делать выводы о том, как наши правила распределения работают. И кроме того показат это заказчику в gui в режиме реального времени. 
+Что же касается оставшейся проверки
+>3. для набора параметров А выбирается группа Б
+, то тут придется все таки смотреть глазами - правда ли нужные группы заполнены клиентами с правильными параметрами. Но благодаря датасету это легко делается! Нет уже необходимости проходится по чеклисту и руками проверять варианты.
+
+В зависимости от требований и прочих условий (типа "я могу предположить возможные сценарии использования заказчиком") можно добавить и другие проверки на основе датасета.
+Проверки типа "а точно ли клиент из России с депозитом 2000 попадет в группу RichRussia?" можно осуществить так - посмотреть (предварительно предоставив GUI для такого дела) какие клиенты попали в RichRussia или куда попали клиенты из России с депозитом больше 1000.
