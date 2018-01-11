@@ -13,7 +13,7 @@ Feature: Select group
     Then group will be "Default"
 
   Scenario: Default
-    When client country no in
+    When client country not in
       |ENG|
       |CHL|
       |RUS|

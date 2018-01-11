@@ -38,7 +38,7 @@ public class FactDictionaryExtractor implements FactExtractor<FactDictionary> {
     public void clientCountryIsNotDefined() {
     }
 
-    @When("^client country no in$")
+    @When("^client country not in$")
     public void clientCountryNotIn(DataTable dataTable) {
         dataTable.raw().get(0).forEach(this::clientCountryIsNot);
     }

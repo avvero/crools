@@ -52,7 +52,7 @@ public class GroupSelector implements Definition<Set<String>> {
         Assert.isTrue(UNDEFINED.equals(client.getCountry()) || !factDictionary.getCountries().contains(client.getCountry()));
     }
 
-    @When("^client country no in$")
+    @When("^client country not in$")
     public void clientCountryNotIn(DataTable dataTable) throws Throwable {
         Assert.isTrue(!dataTable.raw().stream().flatMap(List::stream).collect(Collectors.toList()).contains(client.getCountry()));
     }

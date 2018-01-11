@@ -9,7 +9,7 @@ Feature: Select group
      Then group will be "Chile"
 
   Scenario: Default
-     When client country no in
+     When client country not in
      |ENG|
      |CHL|
      Then group will be "Default"
