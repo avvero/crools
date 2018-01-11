@@ -25,10 +25,23 @@
                     </canvas>
                 </div>
                 <div class="col-md-6">
-                    <h4>Distribution by ...</h4>
+                    <h4>Expressions (regex)</h4>
+                    <table class="table">
+                        <tr ng-repeat="expression in data.expressions | orderBy: 'value'" class="{{expression.usage == 1 ? 'success' : ''}}">
+                            <td>{{expression.step}}</td>
+                            <td>{{expression.value}}</td>
+                        </tr>
+                    </table>
                 </div>
             </div>
             <div ng-repeat="error in statistic.errors">
+                <div ng-if="error.name == 'analiseError'" class="bs-callout bs-callout-danger">
+                    <h4>
+                        Unexpected phrase in scenario
+                    </h4>
+                    Please check scenarios - some phrases are not supported by expression dictionary (see Expressions)
+                    <pre class="well well-sm">{{error.value}}</pre>
+                </div>
                 <div ng-if="error.name == 'entriesInNullGroup'" class="bs-callout bs-callout-danger">
                     <h4 ng-click="showEntriesInNullGroup = !showEntriesInNullGroup" class="pointer">
                         Some entries have not been distributed
@@ -87,11 +100,11 @@
             </div>
         </div>
         <div ng-if="analyseTab == 'meta'">
-            <h3>factDictionary</h3>
+            <h3>fact dictionary</h3>
             <p>{{data.factDictionary}}</p>
             <h3>distributions</h3>
             <p>size: {{data.distributions.length}}</p>
-            <h3>groups distributions</h3>
+            <h3>distributions by groups</h3>
             <div>
                 <table class="table">
                     <thead>
