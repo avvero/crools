@@ -19,10 +19,12 @@ function welcomeController($scope, $http, feature) {
             .success(function (data) {
                 $scope.data = data
                 $scope.collectStatistics(data)
+                $scope.analyseTextPhrases($scope.feature.text)
                 $scope.drawGraphics(data)
             })
             .error(function (error) {
 //                console.error(error)
+                $scope.analyseTextPhrases($scope.feature.text)
                 if (error.message.indexOf("You must implement missing steps with") >= 0) {
                     $scope.statistic = {
                         errors: []
@@ -35,8 +37,10 @@ function welcomeController($scope, $http, feature) {
                     }
                     text = text.replace(/^\n/gm, '');
                     $scope.statistic.errors.push({name: "analiseError", value: text})
+                } else if (error.message.indexOf("Error parsing feature file") >= 0){
+                    $scope.statistic.errors.push({name: "featureParsingError", value: error.message})
                 } else {
-                    alert(error.message)
+                    $scope.statistic.errors.push({name: "unexpectedError", value: error.message})
                 }
             });
     }
@@ -69,13 +73,14 @@ function welcomeController($scope, $http, feature) {
         if (totalDistributions > data.distributions.length) {
             $scope.statistic.errors.push({name: "totalDistributionsGtVariants", value: totalDistributions})
         }
-
-        var text = $scope.textToPhraseList($scope.feature.text)
-        for (var i = 0; i < data.expressions.length; i++) {
-            data.expressions[i].usage = 0
-            var re = new RegExp(data.expressions[i].value, 'gm')
+    }
+    $scope.analyseTextPhrases = function (text) {
+        var text = $scope.textToPhraseList(text)
+        for (var i = 0; i < $scope.data.expressions.length; i++) {
+            $scope.data.expressions[i].usage = 0
+            var re = new RegExp($scope.data.expressions[i].value, 'gm')
             if (text != text.replace(re, '')) {
-                data.expressions[i].usage = 1
+                $scope.data.expressions[i].usage = 1
             }
         }
     }

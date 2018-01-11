@@ -1,29 +1,27 @@
 <div class="row">
     <div class="col-md-6">
-        <h2>Rules</h2>
-        <textarea class="form-control" rows="30" ng-model="feature.text"/>
+        <h2>
+            Rules
+            <span ng-repeat="error in statistic.errors" ng-if="error.name == 'featureParsingError'" class="label label-warning" title="Unfinished or incorrect feature">!</span>
+        </h2>
+        <textarea class="form-control" rows="30" ng-model="feature.text" ng-change="analyse(feature.text)"
+                  ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 200, 'blur': 0 } }"/>
     </div>
     <div class="col-md-6">
         <h2>Analysis
-            <button class="btn btn-info btn-group-xs" ng-click="analyse(feature.text)">perform</button>
+            <!--<button class="btn btn-info btn-group-xs" ng-click="analyse(feature.text)">perform</button>-->
         </h2>
         <ul class="nav nav-tabs">
             <li class="{{analyseTab == 'checkList' ? 'active' : ''}}">
-                <a href="" ng-click="analyseTab = 'checkList'">Check list</a>
+                <a href="" ng-click="analyseTab = 'checkList'">Info</a>
             </li>
             <li class="{{analyseTab == 'meta' ? 'active' : ''}}">
-                <a href="" ng-click="analyseTab = 'meta'">Metadata</a>
+                <a href="" ng-click="analyseTab = 'meta'">Raw data</a>
             </li>
         </ul>
         <div class="panel" ng-if="analyseTab == 'checkList'">
             <h4></h4>
             <div class="row">
-                <div class="col-md-6">
-                    <h4>Distribution by group</h4>
-                    <canvas id="pie" class="chart chart-pie"
-                            chart-data="groupStatsData" chart-labels="groupStatsLabels" chart-options="options">
-                    </canvas>
-                </div>
                 <div class="col-md-6">
                     <h4>Expressions (regex)</h4>
                     <table class="table">
@@ -33,13 +31,30 @@
                         </tr>
                     </table>
                 </div>
+                <div class="col-md-6">
+                    <h4>Distribution by group</h4>
+                    <canvas id="pie" class="chart chart-pie"
+                            chart-data="groupStatsData" chart-labels="groupStatsLabels" chart-options="options">
+                    </canvas>
+                </div>
             </div>
             <div ng-repeat="error in statistic.errors">
+                <div ng-if="error.name == 'unexpectedError'" class="bs-callout bs-callout-danger">
+                    <h4>
+                        Unexpected
+                    </h4>
+                    <pre>{{error.value}}</pre>
+                </div>
+                <div ng-if="error.name == 'featureParsingError'" class="bs-callout bs-callout-warning">
+                    <h4>
+                        Unfinished or incorrect feature
+                    </h4>
+                </div>
                 <div ng-if="error.name == 'analiseError'" class="bs-callout bs-callout-danger">
                     <h4>
-                        Unexpected phrase in scenario
+                        Unexpected phrases in scenario
                     </h4>
-                    Please check scenarios - some phrases are not supported by expression dictionary (see Expressions)
+                    Please check scenarios - some phrases are not supported by expression dictionary:
                     <pre class="well well-sm">{{error.value}}</pre>
                 </div>
                 <div ng-if="error.name == 'entriesInNullGroup'" class="bs-callout bs-callout-danger">
