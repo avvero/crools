@@ -21,17 +21,6 @@ angular.module("flow").config(function ($routeProvider, $stateProvider, $urlRout
                 }
             }
         })
-        .state('conversation', {
-            url: "/conversation/:conversation",
-            views: {
-                "single": {
-                    templateUrl: 'view/conversation.html',
-                    controller: conversationController,
-                    resolve: conversationController.resolve
-                }
-            }
-        })
-
 })
 angular.module("flow").run(function ($rootScope) {
 

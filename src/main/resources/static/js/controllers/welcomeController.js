@@ -103,7 +103,7 @@ welcomeController.resolve = {
 
         $http({
             method: 'GET',
-            url: '/api/feature',
+            url: 'api/feature',
             headers: {'Content-Type': 'application/json;charset=UTF-8'}
         })
             .success(function (feature) {
