@@ -8,7 +8,9 @@ function welcomeController($scope, $http, feature) {
     $scope.showTotalDistributionsGtVariants = false
     //
 
-    $scope.data = {}
+    $scope.data = {
+        expressions: []
+    }
     $scope.analyse = function (data) {
         $http({
             method: 'POST',
