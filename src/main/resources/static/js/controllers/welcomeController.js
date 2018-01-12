@@ -14,7 +14,7 @@ function welcomeController($scope, $http, feature) {
     $scope.analyse = function (data) {
         $http({
             method: 'POST',
-            url: '/api/analise',
+            url: 'api/analise',
             // headers: {'Content-Type': 'application/octet-stream;charset=UTF-8'},
             data: data
         })
